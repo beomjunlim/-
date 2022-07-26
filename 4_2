@@ -1,0 +1,147 @@
+#include <iostream>
+using namespace std;
+
+class IntQueue
+{
+private:
+  int max, num, front, rear, *que;
+
+public:
+  int Initialize(int max)
+  {
+    num = 0;
+    front = 0;
+    rear = 0;
+    if ((que = new int[max]) == NULL)
+    {
+      this->max = 0;
+      return -1;
+    }
+    this->max = max;
+    return 0;
+  }
+  int Enque(int x)
+  {
+    if (num >= max)
+      return -1;
+    else
+    {
+      num++;
+      que[rear++] = x;
+      if (rear == max)
+        rear = 0;
+      return 0;
+    }
+  }
+  int Deque(int *x)
+  {
+    if (num <= 0)
+      return -1;
+    else
+    {
+      num--;
+      *x = que[front++];
+      if (front == max)
+        front = 0;
+      return 0;
+    }
+  }
+  int Peek(int *x)
+  {
+    if (num <= 0)
+      return -1;
+    *x = que[front];
+    return 0;
+  }
+  void Clear()
+  {
+    num = front = rear = 0;
+  }
+  int Capacity()
+  {
+    return max;
+  }
+  int Size()
+  {
+    return num;
+  }
+  int IsEmpty()
+  {
+    return num <= 0;
+  }
+  int IsFull()
+  {
+    return num >= max;
+  }
+  int Search(int x)
+  {
+    int idx;
+    for (int i = 0; i < num; i++)
+    {
+      if (que[idx = (i + front) % max] == x)
+        return idx;
+    }
+    return -1;
+  }
+  void Print() const
+  {
+    for (int i = 0; i < num; i++)
+    {
+      cout << que[(i + front) % max];
+    }
+  }
+  void Terminate()
+  {
+    if (que != NULL)
+      delete[] que;
+    max = num = front = rear = 0;
+  }
+};
+
+int main()
+{
+  IntQueue s;
+  if (s.Initialize(64) == -1)
+  {
+    cout << "error";
+    return 1;
+  }
+  while (1)
+  {
+    int m, x;
+    cout << "현재 데이터 수 : " << s.Size() << "/" << s.Capacity() << endl;
+    cout << "(1)인큐 (2)디큐 (3)피크 (4)출력 (0)종료 : ";
+    cin >> m;
+    if (m == 0)
+      break;
+    switch (m)
+    {
+    case 1:
+      cout << "데이터 : ";
+      cin >> x;
+      if (s.Enque(x) == -1)
+        cout << "error";
+      break;
+
+    case 2:
+      if (s.Deque(&x) == -1)
+        cout << "error";
+      else
+        cout << "디큐한 데이터는 " << x << "입니다";
+      break;
+
+    case 3:
+      if (s.Peek(&x) == -1)
+        cout << "error";
+      else
+        cout << "피크한 데이터는 " << x << "입니다";
+      break;
+
+    case 4:
+      s.Print();
+      break;
+    }
+  }
+  s.Terminate();
+  return 0;
+}
